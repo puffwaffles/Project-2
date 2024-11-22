@@ -1,4 +1,5 @@
 from queue import PriorityQueue
+import node 
 import numpy as np
 
 #Generate random values for forward selection
@@ -19,7 +20,11 @@ def alreadyexists(currlist, usedlists):
     
 #Returns list of unselected features
 def remaining(currlist, fulllist):
-    remain = list(set(fulllist) - set(currlist))
+    remain = []
+    if (len(currlist) == 0):
+        remain = fulllist.copy()
+    else:
+        remain = list(set(fulllist) - set(currlist))
     return remain
 
 def forwardselect(numfeatures):
@@ -28,7 +33,7 @@ def forwardselect(numfeatures):
     print()
     print(f"Using no features and \"random\" evaluation, I get an accuracy of {initial * -1}%")
     #Use priority queue to order feature sets by highest percentage
-    pq = PriorityQueue()''''''
+    pq = PriorityQueue()
     #Let's add the no features state to pq
     pq.put((initial, [])) 
     #Stores feature lists that were already examined. 
@@ -40,7 +45,7 @@ def forwardselect(numfeatures):
         "accuracy": initial * -1 
     }
     #Store node for no features in used features list
-    usedfeaturelists.update(state.get("featurelist"): state)
+    usedfeaturelists.update({state.get("featurelist"): state})
     #Create list of features
     fulllist = np.arange(1, numfeatures + 1, 1)
     #Store list of already gathered features
@@ -58,14 +63,14 @@ def forwardselect(numfeatures):
         #Aquire front of pq
         front = pq.get()
         # Get curr from the front of pq
-        curr = Node(prev, front[1], front[0] * -1)
+        curr = node.Node(prev, front[1], front[0] * -1)
         # If curr's accuracy is worse/same as best acc, stop 
         if (curr.getacc() <= bestacc):
             print("Warning, Accuracy has decreased!")
-            stop == True
-        else if (curr.getacc() <= bestacc):
+            stop = True
+        elif (curr.getacc() <= bestacc):
             print("Warning, Accuracy has not improved!")
-            stop == True
+            stop = True
         # Otherwise, check each additional feature combined with curr's feature
         else :
             #Update best accuracy
@@ -73,11 +78,11 @@ def forwardselect(numfeatures):
             #Update best list
             bestlist = curr.getlist()
             # If we reach the full list, exit
-            if (curr.getlist() == fulllist):
+            if (np.array_equal(curr.getlist(), fulllist)):
                 break
             # Say feature set {...} was the best if curr has features
             if (len(curr.getlist()) > 0):
-                print(f"Feature set {curr.getlist()} was the best, accuracy is {curr.getlist()}")
+                print(f"Feature set {bestlist} was the best, accuracy is {bestacc}%")
             #Update previous node to curr
             prev = curr
             #Add curr's new features to current list and sort it
@@ -94,13 +99,17 @@ def forwardselect(numfeatures):
                 currchildlist = currlist.copy()
                 #Append new feature to current child list
                 currchildlist.append(remain[i])
-                #Check if we already visited this child. If we did, calculate accuracy and update info
-                if (alreadyexists(currchildlist, usedlists)):
+                #Set elements to int
+                currchildlist = np.array(currchildlist).astype(int)
+                #Sort child list
+                currchildlist.sort()
+                #Check if we already visited this child. If we did not, calculate accuracy and update info
+                if (alreadyexists(currchildlist, usedfeaturelists) == False):
                     #Calculate accuracy for child    
                     childacc = generateforwardval()
                     print(f"Using feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
                     #Add new state to pq
-                    pq.put(childacc, currchildlist)
+                    pq.put((childacc, currchildlist))
                     #Create an entry for new combo
                     newstate = {
                         "featurelist": (*currchildlist, ),
@@ -108,22 +117,15 @@ def forwardselect(numfeatures):
                         "accuracy": childacc * -1 
                     }
                     #Store node for no features in used features list
-                    usedfeaturelists.update(newstate.get("featurelist"): newstate)
+                    usedfeaturelists.update({newstate.get("featurelist"): newstate})
             #Aquire new front of pq
             newfront = pq.get()
+            #Put it back for next iteration
+            pq.put((newfront[0], newfront[1]))
+            print()
             #Check if we are looking at prev's child node. If we are not, exit 
             if (usedfeaturelists.get((*newfront[1], )).get("parent") != prev):
                 print("Warning, Accuracy has decreased!")
-                stop == True
+                stop = True
     print(f"Finished search!! The best feature subset is {bestlist}, which has an accuracy of {bestacc}%")            
             
-
-    '''
-    while (stop == False):
-
-    for i in range(numfeatures):
-        num = generateforwardval()
-        print(f"({num}, {i})")
-        pq.put((num, i))
-    while (pq.empty() == False):
-        print(f"{pq.get()[0] * -1}%")'''

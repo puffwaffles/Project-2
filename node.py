@@ -3,7 +3,7 @@
 # Create node object
 class Node:
     # Initilaize node object with list of features and accuracy
-    def _init_(self, parent, featurelist, accuracy):
+    def __init__(self, parent, featurelist, accuracy):
         self.parent = parent
         self.featurelist = featurelist
         self.accuracy = accuracy
