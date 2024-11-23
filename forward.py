@@ -1,6 +1,7 @@
 from queue import PriorityQueue
 import node 
 import numpy as np
+from listfuncs import*
 
 #Generate random values for forward selection
 def generateforwardval():
@@ -9,23 +10,6 @@ def generateforwardval():
     #Multiply by -1 to ensure larger percentages get higher priority
     num = round(np.random.rand() * 100, 1) * -1
     return num
-
-#Checks if a list already exists in the dictionary
-def alreadyexists(currlist, usedlists):
-    exists = False
-    tuplelist = (*currlist, )
-    if (tuplelist in usedlists):
-        exists = True
-    return exists
-    
-#Returns list of unselected features
-def remaining(currlist, fulllist):
-    remain = []
-    if (len(currlist) == 0):
-        remain = fulllist.copy()
-    else:
-        remain = list(set(fulllist) - set(currlist))
-    return remain
 
 def forwardselect(numfeatures):
     #Generate random value for no features
@@ -107,7 +91,7 @@ def forwardselect(numfeatures):
                 if (alreadyexists(currchildlist, usedfeaturelists) == False):
                     #Calculate accuracy for child    
                     childacc = generateforwardval()
-                    print(f"Using feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
+                    print(f"\tUsing feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
                     #Add new state to pq
                     pq.put((childacc, currchildlist))
                     #Create an entry for new combo
