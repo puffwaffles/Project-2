@@ -121,6 +121,10 @@ def backwardselect(numfeatures):
         print()
         #Check if we are looking at prev's child node. If we are not, exit 
         if (newfront[0] * -1 < bestacc):
+            print("Warning, no improvement in accuracy!")
+        elif(newfront[0] * -1 > bestacc):
+            continue
+        else:
             print("Warning, no significant improvement in accuracy!")
     print(f"Finished search!! The best feature subset is {bestlist}, which has an accuracy of {bestacc}%")            
             

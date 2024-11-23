@@ -49,12 +49,21 @@ def forwardselect(numfeatures):
         # Get curr from the front of pq
         curr = node.Node(prev, front[1], front[0] * -1)
         # If curr's accuracy is worse/same as best acc, stop 
-        if (curr.getacc() <= bestacc):
+        if (np.array_equal(curr.getlist(), fulllist)):
+            if (curr.getacc() < bestacc):
+                print("Warning, Accuracy has decreased!")
+            elif (curr.getacc() == bestacc):
+                print("Warning, Accuracy has not improved!")
+            print(f"Reached full list!")
+            print()
+            stop = True
+            break
+        if (curr.getacc() < bestacc):
             print("Warning, Accuracy has decreased!")
-            stop = True
-        elif (curr.getacc() <= bestacc):
+            print(f"Feature set {curr.getlist()} was the best out of the group, accuracy is {curr.getacc()}%")
+        elif (curr.getacc() == bestacc):
             print("Warning, Accuracy has not improved!")
-            stop = True
+            print(f"Feature set {curr.getlist()} was the best out of the group, accuracy is {curr.getacc()}%")
         # Otherwise, check each additional feature combined with curr's feature
         else :
             #Update best accuracy
@@ -62,54 +71,50 @@ def forwardselect(numfeatures):
             #Update best list
             bestlist = curr.getlist()
             # If we reach the full list, exit
-            if (np.array_equal(curr.getlist(), fulllist)):
-                break
             # Say feature set {...} was the best if curr has features
             if (len(curr.getlist()) > 0):
-                print(f"Feature set {bestlist} was the best, accuracy is {bestacc}%")
-            #Update previous node to curr
-            prev = curr
-            #Add curr's new features to current list and sort it
-            currlist.extend(remaining(currlist, curr.getlist()))
-            #Sort this list
-            currlist.sort()
-            #Update list of remaining features
-            remain = remaining(currlist, fulllist)
-            #Sort this list
-            remain.sort()
-            #Iterate through remaining features
-            for i in range(len(remain)):
-                #Use a currchild list to represent each added feature combo
-                currchildlist = currlist.copy()
-                #Append new feature to current child list
-                currchildlist.append(remain[i])
-                #Set elements to int
-                currchildlist = np.array(currchildlist).astype(int)
-                #Sort child list
-                currchildlist.sort()
-                #Check if we already visited this child. If we did not, calculate accuracy and update info
-                if (alreadyexists(currchildlist, usedfeaturelists) == False):
-                    #Calculate accuracy for child    
-                    childacc = generateforwardval()
-                    print(f"\tUsing feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
-                    #Add new state to pq
-                    pq.put((childacc, currchildlist))
-                    #Create an entry for new combo
-                    newstate = {
-                        "featurelist": (*currchildlist, ),
-                        "parent": prev,
-                        "accuracy": childacc * -1 
-                    }
-                    #Store node for no features in used features list
-                    usedfeaturelists.update({newstate.get("featurelist"): newstate})
-            #Aquire new front of pq
-            newfront = pq.get()
-            #Put it back for next iteration
-            pq.put((newfront[0], newfront[1]))
-            print()
-            #Check if we are looking at prev's child node. If we are not, exit 
-            if (usedfeaturelists.get((*newfront[1], )).get("parent") != prev):
-                print("Warning, Accuracy has decreased!")
-                stop = True
+                print(f"Feature set {curr.getlist()} was the best, accuracy is {curr.getacc()}%")
+        #Update previous node to curr
+        prev = curr
+        #Add curr's new features to current list and sort it
+        currlist.extend(remaining(currlist, curr.getlist()))
+        #Sort this list
+        currlist.sort()
+        #Update list of remaining features
+        remain = remaining(currlist, fulllist)
+        #Sort this list
+        remain.sort()
+        #Reset pq
+        pq = PriorityQueue()
+        #Iterate through remaining features
+        for i in range(len(remain)):
+            #Use a currchild list to represent each added feature combo
+            currchildlist = currlist.copy()
+            #Append new feature to current child list
+            currchildlist.append(remain[i])
+            #Set elements to int
+            currchildlist = np.array(currchildlist).astype(int)
+            #Sort child list
+            currchildlist.sort()
+            #Check if we already visited this child. If we did not, calculate accuracy and update info
+            if (alreadyexists(currchildlist, usedfeaturelists) == False):
+                #Calculate accuracy for child    
+                childacc = generateforwardval()
+                print(f"\tUsing feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
+                #Add new state to pq
+                pq.put((childacc, currchildlist))
+                #Create an entry for new combo
+                newstate = {
+                    "featurelist": (*currchildlist, ),
+                    "parent": prev,
+                    "accuracy": childacc * -1 
+                }
+                #Store node for no features in used features list
+                usedfeaturelists.update({newstate.get("featurelist"): newstate})
+        #Aquire new front of pq
+        newfront = pq.get()
+        #Put it back for next iteration
+        pq.put((newfront[0], newfront[1]))
+        print()
     print(f"Finished search!! The best feature subset is {bestlist}, which has an accuracy of {bestacc}%")            
             
