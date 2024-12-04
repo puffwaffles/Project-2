@@ -22,20 +22,26 @@ def remaining(currlist, fulllist):
 
 #Takes in dataset to normalize it
 def normalize(dataset):
-    newdatadf = pd.read_csv(dataset, sep='\s+')
+    newdatadf = pd.read_csv(dataset, sep='\s+', header=None)
     newdatadf.astype(float)
     newdata = []
+    minimum = []
+    maximum = []
+    #Gather min and max values for each column
+    for k in range(newdatadf.shape[1]):
+        coldf = newdatadf.iloc[:, k]
+        minimum.append(coldf.min())
+        maximum.append(coldf.max())
+    #Rows
     for i in range(newdatadf.shape[0]):
         row = []
+        #Columns
         for j in range(newdatadf.shape[1]):
             if (j == 0): 
                 row.append(float(newdatadf.iloc[i, 0]))
             else:
-                coldf = newdatadf.iloc[:, j]
-                minimum = coldf.min()
-                maximum = coldf.max()
-                oldnum = float(newdatadf.iloc[i, 0])
-                num = float((newdatadf.iloc[i, 0] - minimum) / (maximum - minimum))
+                oldnum = float(newdatadf.iloc[i, j])
+                num = float((oldnum - minimum[j]) / (maximum[j] - minimum[j]))
                 row.append(num)
         newdata.append(row)
     return newdata
