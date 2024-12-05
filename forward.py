@@ -2,6 +2,7 @@ from queue import PriorityQueue
 import node 
 import numpy as np
 from listfuncs import*
+from validator import*
 
 #Generate random values for forward selection
 def generateforwardval():

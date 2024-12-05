@@ -12,7 +12,7 @@ moveon = False
 match data:
     case 1:
         newdata = normalize('data/small-test-dataset.txt') 
-        #moveon = True
+        moveon = True
     case 2:
         newdata = normalize('data/large-test-dataset.txt')
         moveon = True
