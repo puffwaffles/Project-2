@@ -19,7 +19,7 @@ match data:
     case 1:
         newdata = normalize('data/small-test-dataset.txt') 
         for i in range(len(featurelist)):
-            if (featurelist[i] < 1 or featurelist[i] > len(newdata[0])):
+            if (featurelist[i] < 1 or featurelist[i] >= len(newdata[0])):
                 badval = True
         if (numfeatures > len(newdata) or badval):
             print(f"Feature list can not be used with the small test dataset")
@@ -31,7 +31,7 @@ match data:
     case 2:
         newdata = normalize('data/large-test-dataset.txt')
         for i in range(len(featurelist)):
-            if (featurelist[i] < 1 or featurelist[i] > len(newdata[0])):
+            if (featurelist[i] < 1 or featurelist[i] >= len(newdata[0])):
                 badval = True
         if (numfeatures > len(newdata) or badval):
             print(f"Feature list can not be used with the large test dataset")

@@ -30,12 +30,16 @@ def promptdataset():
     print()
     print("1. Small Dataset")
     print("2. Large Dataset")
+    print("3. Titanic Dataset")
+    print("4. Custom Dataset")
     data = int(input("Please type the number of the dataset you want to use: "))
-    while (data <= 0 or data > 2): 
+    while (data <= 0 or data > 4): 
         print("Invalid input for algorthim choice!")
         print()
         print("1. Small Dataset")
         print("2. Large Dataset")
+        print("3. Titanic Dataset")
+        print("4. Custom Dataset")
         data = int(input("Please type the number of the dataset you want to use: "))
     return data
 
