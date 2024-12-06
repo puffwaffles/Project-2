@@ -8,6 +8,7 @@ from menu import*
 from node import*
 import pandas as pd
 import sys
+import time
 
 numfeatures = promptnumfeatures()
 newdata = []
@@ -18,7 +19,10 @@ badval = False
 match data:
     case 1:
         file = 'data/small-test-dataset.txt'
+        start = time.time()
         newdata = normalize(file) 
+        end = time.time()
+        print(f"Time taken for normalization: {end - start}")
         for i in range(len(featurelist)):
             if (featurelist[i] < 1 or featurelist[i] >= len(newdata[0])):
                 badval = True
@@ -29,7 +33,10 @@ match data:
             validate = Validator(featurelist, classify, classify.gettrainingdata())
             default = validate.default()
             print(f"Default rate: {default * -1}")
+            start = time.time()
             acc = validate.evaluate() * -1
+            end = time.time()
+            print(f"Time taken for validation: {end - start}")
             print(f"After normalizing and running nn, we get an accuracy of {acc}% for small test dataset")
             newrawdata = raw(file)
             newclassify = Classifier(featurelist, newrawdata)
@@ -40,7 +47,10 @@ match data:
             print(f"Without normalizing and running nn, we get an accuracy of {acc}% for small test dataset")
     case 2:
         file = 'data/large-test-dataset.txt'
-        newdata = normalize(file)
+        start = time.time()
+        newdata = normalize(file) 
+        end = time.time()
+        print(f"Time taken for normalization: {end - start}")
         for i in range(len(featurelist)):
             if (featurelist[i] < 1 or featurelist[i] >= len(newdata[0])):
                 badval = True
@@ -51,7 +61,10 @@ match data:
             validate = Validator(featurelist, classify, classify.gettrainingdata())
             default = validate.default()
             print(f"Default rate: {default * -1}")
+            start = time.time()
             acc = validate.evaluate() * -1
+            end = time.time()
+            print(f"Time taken for validation: {end - start}")
             print(f"After normalizing and running nn, we get an accuracy of {acc}% for large test dataset")
             newrawdata = raw(file)
             newclassify = Classifier(featurelist, newrawdata)
@@ -62,7 +75,10 @@ match data:
             print(f"Without normalizing and running nn, we get an accuracy of {acc}% for large test dataset")
     case 3: 
         file = 'data/titanic-clean.txt'
-        newdata = normalize(file)
+        start = time.time()
+        newdata = normalize(file) 
+        end = time.time()
+        print(f"Time taken for normalization: {end - start}")
         for i in range(len(featurelist)):
             if (featurelist[i] < 1 or featurelist[i] >= len(newdata[0])):
                 badval = True
@@ -73,7 +89,10 @@ match data:
             validate = Validator(featurelist, classify, classify.gettrainingdata())
             default = validate.default()
             print(f"Default rate: {default * -1}")
+            start = time.time()
             acc = validate.evaluate() * -1
+            end = time.time()
+            print(f"Time taken for validation: {end - start}")
             print(f"After normalizing and running nn, we get an accuracy of {acc}% for titanic test dataset")
             newrawdata = raw(file)
             newclassify = Classifier(featurelist, newrawdata)
