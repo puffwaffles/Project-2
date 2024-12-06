@@ -17,7 +17,8 @@ acc = 0.0
 badval = False
 match data:
     case 1:
-        newdata = normalize('data/small-test-dataset.txt') 
+        file = 'data/small-test-dataset.txt'
+        newdata = normalize(file) 
         for i in range(len(featurelist)):
             if (featurelist[i] < 1 or featurelist[i] >= len(newdata[0])):
                 badval = True
@@ -26,10 +27,20 @@ match data:
         else:
             classify = Classifier(featurelist, newdata)
             validate = Validator(featurelist, classify, classify.gettrainingdata())
+            default = validate.default()
+            print(f"Default rate: {default * -1}")
             acc = validate.evaluate() * -1
-            print(f"After running nn, we get an accuracy of {acc}% for small test dataset")
+            print(f"After normalizing and running nn, we get an accuracy of {acc}% for small test dataset")
+            newrawdata = raw(file)
+            newclassify = Classifier(featurelist, newrawdata)
+            newvalidate = Validator(featurelist, newclassify, newclassify.gettrainingdata())
+            default = newvalidate.default()
+            print(f"Default rate: {default * -1}")
+            acc = validate.evaluate() * -1
+            print(f"Without normalizing and running nn, we get an accuracy of {acc}% for small test dataset")
     case 2:
-        newdata = normalize('data/large-test-dataset.txt')
+        file = 'data/large-test-dataset.txt'
+        newdata = normalize(file)
         for i in range(len(featurelist)):
             if (featurelist[i] < 1 or featurelist[i] >= len(newdata[0])):
                 badval = True
@@ -38,8 +49,39 @@ match data:
         else:
             classify = Classifier(featurelist, newdata)
             validate = Validator(featurelist, classify, classify.gettrainingdata())
+            default = validate.default()
+            print(f"Default rate: {default * -1}")
             acc = validate.evaluate() * -1
-            print(f"After running nn, we get an accuracy of {acc}% for large test dataset")
+            print(f"After normalizing and running nn, we get an accuracy of {acc}% for large test dataset")
+            newrawdata = raw(file)
+            newclassify = Classifier(featurelist, newrawdata)
+            newvalidate = Validator(featurelist, newclassify, newclassify.gettrainingdata())
+            default = newvalidate.default()
+            print(f"Default rate: {default * -1}")
+            acc = validate.evaluate() * -1
+            print(f"Without normalizing and running nn, we get an accuracy of {acc}% for large test dataset")
+    case 3: 
+        file = 'data/titanic-clean.txt'
+        newdata = normalize(file)
+        for i in range(len(featurelist)):
+            if (featurelist[i] < 1 or featurelist[i] >= len(newdata[0])):
+                badval = True
+        if (numfeatures > len(newdata) or badval):
+            print(f"Feature list can not be used with the titanic test dataset")
+        else:
+            classify = Classifier(featurelist, newdata)
+            validate = Validator(featurelist, classify, classify.gettrainingdata())
+            default = validate.default()
+            print(f"Default rate: {default * -1}")
+            acc = validate.evaluate() * -1
+            print(f"After normalizing and running nn, we get an accuracy of {acc}% for titanic test dataset")
+            newrawdata = raw(file)
+            newclassify = Classifier(featurelist, newrawdata)
+            newvalidate = Validator(featurelist, newclassify, newclassify.gettrainingdata())
+            default = newvalidate.default()
+            print(f"Default rate: {default * -1}")
+            acc = validate.evaluate() * -1
+            print(f"Without normalizing and running nn, we get an accuracy of {acc}% for titanic test dataset")
     case default:
         print("Invalid input!")
 

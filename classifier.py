@@ -28,6 +28,9 @@ class Classifier:
     def gettrainingdata(self):
         return self.training
 
+    def getfeatures(self):
+        return self.features
+
     def test(self, instance):
         classify = 0.0
         smallest = sys.float_info.max

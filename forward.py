@@ -12,11 +12,14 @@ def generateforwardval():
     num = round(np.random.rand() * 100, 1) * -1
     return num
 
-def forwardselect(numfeatures):
-    #Generate random value for no features
-    initial = generateforwardval()
+def forwardselect(numfeatures, data):
+    #Initialize a classifier and a validator object
+    classify = Classifier([], data)
+    validate = Validator([], classify, classify.gettrainingdata())
+    #Use default rate for initial 
+    initial = validate.default()
     print()
-    print(f"Using no features and \"random\" evaluation, I get an accuracy of {initial * -1}%")
+    print(f"Running nearest neighbor with no features (default rate), using \"leaving-one-out\" evaluation, I get an accuracy of {initial * -1}%")
     #Use priority queue to order feature sets by highest percentage
     pq = PriorityQueue()
     #Let's add the no features state to pq
@@ -52,29 +55,30 @@ def forwardselect(numfeatures):
         # If curr's accuracy is worse/same as best acc, stop 
         if (np.array_equal(curr.getlist(), fulllist)):
             if (curr.getacc() < bestacc):
-                print("Warning, Accuracy has decreased!")
+                print("Warning, Accuracy has decreased! Continuing search in case of local maxima")
             elif (curr.getacc() == bestacc):
-                print("Warning, Accuracy has not improved!")
+                print("Warning, Accuracy has not improved! Continuing search in case of local maxima")
             print(f"Reached full list!")
             print()
             stop = True
             break
         if (curr.getacc() < bestacc):
-            print("Warning, Accuracy has decreased!")
-            print(f"Feature set {curr.getlist()} was the best out of the group, accuracy is {curr.getacc()}%")
+            print("Warning, Accuracy has decreased! Continuing search in case of local maxima")
+            print(f"Feature set {convertint(curr.getlist())} was the best out of the group, accuracy is {curr.getacc()}%")
         elif (curr.getacc() == bestacc):
-            print("Warning, Accuracy has not improved!")
-            print(f"Feature set {curr.getlist()} was the best out of the group, accuracy is {curr.getacc()}%")
+            print("Warning, Accuracy has not improved! Continuing search in case of local maxima")
+            print(f"Feature set {convertint(curr.getlist())} was the best out of the group, accuracy is {curr.getacc()}%")
         # Otherwise, check each additional feature combined with curr's feature
         else :
             #Update best accuracy
             bestacc = curr.getacc()
             #Update best list
-            bestlist = curr.getlist()
+            bestlist = convertint(curr.getlist())
+            #list(map(int, curr.getlist()))
             # If we reach the full list, exit
             # Say feature set {...} was the best if curr has features
             if (len(curr.getlist()) > 0):
-                print(f"Feature set {curr.getlist()} was the best, accuracy is {curr.getacc()}%")
+                print(f"Feature set {convertint(curr.getlist())} was the best, accuracy is {curr.getacc()}%")
         #Update previous node to curr
         prev = curr
         #Add curr's new features to current list and sort it
@@ -99,11 +103,13 @@ def forwardselect(numfeatures):
             currchildlist.sort()
             #Check if we already visited this child. If we did not, calculate accuracy and update info
             if (alreadyexists(currchildlist, usedfeaturelists) == False):
+                classifier = Classifier(currchildlist, data)
+                validate = Validator(currchildlist, classifier, classifier.gettrainingdata())
                 #Calculate accuracy for child    
-                childacc = generateforwardval()
+                childacc = validate.evaluate()
                 print(f"\tUsing feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
                 #Add new state to pq
-                pq.put((childacc, currchildlist))
+                pq.put((childacc, list(currchildlist)))
                 #Create an entry for new combo
                 newstate = {
                     "featurelist": (*currchildlist, ),

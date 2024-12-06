@@ -12,15 +12,18 @@ def generatebackwardval():
     num = round(np.random.rand() * 100, 1) * -1
     return num
 
-def backwardselect(numfeatures):
+def backwardselect(numfeatures, data):
+    #Create list of features
+    fulllist = np.arange(1, numfeatures + 1, 1)
+    #Initialize a classifier and a validator object
+    classify = Classifier(fulllist, data)
+    validate = Validator(fulllist, classify, classify.gettrainingdata())
     #Generate random value for all features
-    initial = generatebackwardval()
+    initial = validate.evaluate()
     print()
     print(f"Using all features and \"random\" evaluation, I get an accuracy of {initial * -1}%")
     #Use priority queue to order feature sets by highest percentage
     pq = PriorityQueue()
-    #Create list of features
-    fulllist = np.arange(1, numfeatures + 1, 1)
     #Let's add the all features state to pq
     pq.put((initial, fulllist)) 
     #Stores feature lists that were already examined. 
@@ -58,7 +61,9 @@ def backwardselect(numfeatures):
             #Update best accuracy
             bestacc = curr.getacc()
             #Update best list
-            bestlist = curr.getlist()
+            #Making a copy sor currlist does not get disturbed
+            listcopy = curr.getlist().copy()
+            bestlist = convertint(listcopy)
         # If we reach the empty list, exit
         if (np.array_equal(currlist, [])):
             print(f"Reached empty list!")
@@ -84,8 +89,6 @@ def backwardselect(numfeatures):
         for i in range(len(remain)):
             #Use a currchild list to represent each added feature combo
             currchildlist = currlist.copy()
-            #Convert currchildlist into list
-            currchildlist.tolist()
             #Append new feature to current child list
             currchildlist = np.delete(currchildlist, np.where(currchildlist == remain[i]))
             #Set elements to int
@@ -97,14 +100,18 @@ def backwardselect(numfeatures):
                 currlist = currchildlist.copy()
             #Check if we already visited this child. If we did not, calculate accuracy and update info
             if (alreadyexists(currchildlist, usedfeaturelists) == False):
-                #Calculate accuracy for child    
-                childacc = generatebackwardval()
+                classifier = Classifier(currchildlist, data)
+                validate = Validator(currchildlist, classifier, classifier.gettrainingdata())
                 if (np.array_equal(currchildlist, [])) :
+                    #Calculate accuracy for child as default   
+                    childacc = validate.default()
                     print(f"\tUsing no features, I get an accuracy of {childacc * -1}%")
                 else:
+                    #Calculate accuracy for child    
+                    childacc = validate.evaluate()
                     print(f"\tUsing feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
                 #Add new state to pq
-                pq.put((childacc, currchildlist))
+                pq.put((childacc, list(currchildlist)))
                 #Create an entry for new combo
                 newstate = {
                     "featurelist": (*currchildlist, ),

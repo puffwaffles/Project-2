@@ -37,11 +37,11 @@ class Validator:
         #Iterate through class values to find them 
         for i in range(len(self.dataset)):
             #If we have not found this class value yet, add the vlaue to the map 
-            if (dataset[i][0] not in classvalues):
-                classvalues.update({dataset[i][0]: 1})
+            if (self.dataset[i][0] not in classvalues):
+                classvalues.update({self.dataset[i][0]: 1})
             #Otherwise, increment the instances of the value
             else:
-                classvalues.update({dataset[i][0]: classvalues.get(dataset[i][0]) + 1})
+                classvalues.update({self.dataset[i][0]: classvalues.get(self.dataset[i][0]) + 1})
         #Find the total amount of instances of the most common class
         for j in classvalues:
             if (classvalues[j] > amount):
