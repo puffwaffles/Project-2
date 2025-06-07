@@ -33,7 +33,7 @@ def promptdataset():
     print("3. Small 30 Dataset")
     print("4. Large 32 Dataset")
     print("5. Titanic Dataset")
-    print("6. Ceramics Dataset")
+    print("6. Soybeans Dataset")
     print("7. Custom Dataset")
     data = int(input("Please type the number of the dataset you want to use: "))
     while (data <= 0 or data > 7): 
@@ -44,7 +44,7 @@ def promptdataset():
         print("3. Small 30 Dataset")
         print("4. Large 32 Dataset")
         print("5. Titanic Dataset")
-        print("6. Ceramics Dataset")
+        print("6. Soybeans Dataset")
         print("7. Custom Dataset")
         data = int(input("Please type the number of the dataset you want to use: "))
     return data

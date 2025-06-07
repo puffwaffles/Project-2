@@ -56,10 +56,10 @@ match data:
         file = "titanic-clean.csv"
 
     case 6:
-        newdata = normalize('data/Chemical_Composion_of_Ceramic2.csv', 2) 
+        newdata = normalize('data/data.csv', 2) 
         features = len(newdata[0]) - 1
         moveon = True
-        file = "Chemical_Composion_of_Ceramic2.csv"
+        file = "data.csv"
 
     case 7:
         val = input("Please type the name of the file to test: ")
