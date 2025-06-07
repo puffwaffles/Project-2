@@ -24,8 +24,11 @@ def remaining(currlist, fulllist):
 
 #Just gets raw data
 def raw(dataset):
-    newdatadf = pd.read_csv(dataset, sep='\s+', header=None)
-    newdatadf.astype(float)
+    if (filetype == 1):
+        newdatadf = pd.read_csv(dataset, sep='\s+', header=None)
+    else:
+        newdatadf = pd.read_csv(dataset, header=0)
+    newdatadf.iloc[:, 1:] = newdatadf.iloc[:, 1:].astype(float)
     print()
     print(f"This dataset has {newdatadf.shape[1] - 1} features (not including the class attribute), with {newdatadf.shape[0]} instances.")
     print()
@@ -36,16 +39,22 @@ def raw(dataset):
         row = []
         #Columns
         for j in range(newdatadf.shape[1]):
-            row.append(float(newdatadf.iloc[i, j]))
+            if (j == 0):
+                row.append(newdatadf.iloc[i, j])
+            else:
+                row.append(float(newdatadf.iloc[i, j]))
         newdata.append(row)
     sys.stdout.write("Done!")
     print()
     return newdata
 
 #Takes in dataset to normalize it
-def normalize(dataset):
-    newdatadf = pd.read_csv(dataset, sep='\s+', header=None)
-    newdatadf.astype(float)
+def normalize(dataset, filetype):
+    if (filetype == 1):
+        newdatadf = pd.read_csv(dataset, sep='\s+', header=None)
+    else:
+        newdatadf = pd.read_csv(dataset, header=0)
+    newdatadf.iloc[:, 1:] = newdatadf.iloc[:, 1:].astype(float)
     print()
     print(f"This dataset has {newdatadf.shape[1] - 1} features (not including the class attribute), with {newdatadf.shape[0]} instances.")
     print()
@@ -64,7 +73,7 @@ def normalize(dataset):
         #Columns
         for j in range(newdatadf.shape[1]):
             if (j == 0): 
-                row.append(float(newdatadf.iloc[i, 0]))
+                row.append(newdatadf.iloc[i, 0])
             else:
                 oldnum = float(newdatadf.iloc[i, j])
                 num = float((oldnum - minimum[j]) / (maximum[j] - minimum[j]))

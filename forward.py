@@ -12,7 +12,7 @@ def generateforwardval():
     num = round(np.random.rand() * 100, 1) * -1
     return num
 
-def forwardselect(numfeatures, data):
+def forwardselect(numfeatures, data, file):
     #Initialize a classifier and a validator object
     classify = Classifier([], data)
     validate = Validator([], classify, classify.gettrainingdata())
@@ -108,6 +108,14 @@ def forwardselect(numfeatures, data):
                 #Calculate accuracy for child    
                 childacc = validate.evaluate()
                 print(f"\tUsing feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
+                
+                if (np.array_equal(currchildlist, [])) :
+                    with open(file, "a") as f:
+                        f.write(f"[],{childacc * -1}\n")
+                else:
+                    with open(file, "a") as f:
+                        f.write(f"{currchildlist},{childacc * -1}\n")
+
                 #Add new state to pq
                 pq.put((childacc, list(currchildlist)))
                 #Create an entry for new combo

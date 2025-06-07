@@ -12,7 +12,7 @@ def generatebackwardval():
     num = round(np.random.rand() * 100, 1) * -1
     return num
 
-def backwardselect(numfeatures, data):
+def backwardselect(numfeatures, data, file):
     #Create list of features
     fulllist = np.arange(1, numfeatures + 1, 1)
     #Initialize a classifier and a validator object
@@ -106,10 +106,18 @@ def backwardselect(numfeatures, data):
                     #Calculate accuracy for child as default   
                     childacc = validate.default()
                     print(f"\tUsing no features, I get an accuracy of {childacc * -1}%")
+                    
+                    with open(file, "a") as f:
+                        f.write(f"[],{childacc * -1}\n")
+
                 else:
                     #Calculate accuracy for child    
                     childacc = validate.evaluate()
                     print(f"\tUsing feature(s) {currchildlist}, I get an accuracy of {childacc * -1}%")
+
+                    with open(file, "a") as f:
+                        f.write(f"{currchildlist},{childacc * -1}\n")
+
                 #Add new state to pq
                 pq.put((childacc, list(currchildlist)))
                 #Create an entry for new combo

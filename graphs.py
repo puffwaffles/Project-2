@@ -94,21 +94,21 @@ while (y < 0 or y == x):
 data = promptdataset()
 match data:
     case 1:
-        newdata = normalize('data/small-test-dataset.txt') 
+        newdata = normalize('data/small-test-dataset.txt', 1) 
         if (x >= len(newdata[0]) or y >= len(newdata[0])):
             print(f"Feature list can not be used with the small test dataset")
         else:
             newdf = converttodf(newdata)
             scatterplot(x, y, newdf)
     case 2:
-        newdata = normalize('data/large-test-dataset.txt')
+        newdata = normalize('data/large-test-dataset.txt', 1)
         if (x >= len(newdata[0]) or y >= len(newdata[0])):
             print(f"Feature list can not be used with the large test dataset")
         else:
             newdf = converttodf(newdata)
             scatterplot(x, y, newdf) 
     case 3:
-        newdata = normalize('data/titanic-clean.txt') 
+        newdata = normalize('data/titanic-clean.txt', 1) 
         if (x >= len(newdata[0]) or y >= len(newdata[0])):
             print(f"Feature list can not be used with the titanic test dataset")
         else:
@@ -116,12 +116,17 @@ match data:
             scatterplot(x, y, newdf)
     case 4:
         custom = 'data/' + input("Please type the name of the file to test: ")
-        newdata = normalize(custom) 
+        if (custom.find(".csv") != -1):
+            newdata = normalize(custom, 2)
+        else:
+             newdata = normalize(custom, 1)
+
         if (x >= len(newdata[0]) or y >= len(newdata[0])):
             print(f"Feature list can not be used with the custom dataset")
         else:
             newdf = converttodf(newdata)
             scatterplot(x, y, newdf)
+            
     case default:
         print("Invalid input!")
 

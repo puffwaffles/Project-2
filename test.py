@@ -20,7 +20,7 @@ match data:
     case 1:
         file = 'data/small-test-dataset.txt'
         start = time.time()
-        newdata = normalize(file) 
+        newdata = normalize(file, 1) 
         end = time.time()
         print(f"Time taken for normalization: {end - start}")
         for i in range(len(featurelist)):
@@ -48,7 +48,7 @@ match data:
     case 2:
         file = 'data/large-test-dataset.txt'
         start = time.time()
-        newdata = normalize(file) 
+        newdata = normalize(file, 1) 
         end = time.time()
         print(f"Time taken for normalization: {end - start}")
         for i in range(len(featurelist)):
@@ -76,7 +76,7 @@ match data:
     case 3: 
         file = 'data/titanic-clean.txt'
         start = time.time()
-        newdata = normalize(file) 
+        newdata = normalize(file, 1) 
         end = time.time()
         print(f"Time taken for normalization: {end - start}")
         for i in range(len(featurelist)):

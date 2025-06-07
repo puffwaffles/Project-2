@@ -31,6 +31,7 @@ class Classifier:
     def getfeatures(self):
         return self.features
 
+    """
     def test(self, instance):
         classify = 0.0
         smallest = sys.float_info.max
@@ -44,4 +45,34 @@ class Classifier:
                     classify = trainclass
                     smallest = dist
         return classify
-    
+    """
+    def test(self):
+        #Dictionary that stores dictionary of distance lists for each data point
+        vallist = {}
+        #Grab elements from 0 to size - 1
+        for i in range(len(self.training) - 1):
+            #Grab elements from i + 1 to size. We avoid grabbing the same elements as i and parallelize on pairs
+            for j in range(i + 1, len(self.training)):
+                #Get classes of i and j
+                trainclass1 = self.training[i][0]
+                trainclass2 = self.training[j][0]
+
+                #Get feature values for i and j
+                list1 = self.training[i][1:]
+                list2 = self.training[j][1:]
+                
+                #Compute euclidean distance between i and j
+                dist = np.linalg.norm(np.array(list1) - np.array(list2))
+
+                #Append class of j and distance in i's list
+                if (i not in vallist.keys()):
+                    vallist[i] = [[trainclass2, dist]]
+                else:
+                    vallist[i].append([trainclass2, dist])
+
+                #Append class of i and distance in j's list
+                if (j not in vallist.keys()):
+                    vallist[j] = [[trainclass1, dist]]
+                else:
+                    vallist[j].append([trainclass1, dist])
+        return vallist

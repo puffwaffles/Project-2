@@ -9,6 +9,7 @@ class Validator:
         self.classifier = classifier
         self.dataset = dataset
 
+    """
     #Evaluation function 
     def evaluate(self): 
         acc = 0.0
@@ -27,6 +28,32 @@ class Validator:
         #Convert acc to negative percentage for priority queue
         acc = round(acc * 100, 1) * -1
         return acc
+    """
+
+    #Evaluation function 
+    def evaluate(self): 
+        acc = 0.0
+        correct = 0.0
+        vallist = self.classifier.test()
+        #Iterate through each instance row
+        for i in range(len(self.dataset)):
+            #Correct instance class
+            correctacc = self.dataset[i][0]
+
+            #Sort the list for i based on distance
+            sort = sorted(vallist[i], key = lambda x: x[1])
+            #Predicted instance class
+            predictacc = sort[0][0]
+
+            #Increment correct if correctacc and predictacc match
+            if (correctacc == predictacc):
+                correct = correct + 1
+
+        #Evaluate proportion of correct guesses
+        acc = correct / len(self.dataset)
+        #Convert acc to negative percentage for priority queue
+        acc = round(acc * 100, 1) * -1
+        return acc    
 
     #Default rate function
     def default(self):

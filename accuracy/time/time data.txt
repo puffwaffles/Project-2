@@ -1,0 +1,8 @@
+Forward pass
+Time started: 1748945376.685902
+Time ended: 1748945385.080041
+Time elapsed: 8.394138813018799 seconds
+Backward pass
+Time started: 1748945410.7793448
+Time ended: 1748945419.5702431
+Time elapsed: 8.790898323059082 seconds
